@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 70" role="img" aria-label="TIM">
+  <title>TIM</title>
+  <g fill="#5eead4">
+    <rect x="0" y="0" width="96" height="14"/>
+    <rect x="36" y="14" width="24" height="42"/>
+    <rect x="120" y="0" width="24" height="56"/>
+    <rect x="168" y="0" width="36" height="14"/>
+    <rect x="252" y="0" width="36" height="14"/>
+    <rect x="168" y="14" width="48" height="14"/>
+    <rect x="240" y="14" width="48" height="14"/>
+    <rect x="168" y="28" width="24" height="14"/>
+    <rect x="216" y="28" width="24" height="14"/>
+    <rect x="264" y="28" width="24" height="14"/>
+    <rect x="168" y="42" width="24" height="14"/>
+    <rect x="264" y="42" width="24" height="14"/>
+  </g>
+  <g fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linejoin="miter" stroke-linecap="square" opacity="0.65">
+    <polyline points="6,14 6,21 36,21"/>
+    <polyline points="96,7 102,7 102,21 66,21 66,63 42,63 42,56"/>
+    <polyline points="144,7 150,7 150,63 126,63 126,56"/>
+    <polyline points="204,7 210,7 210,14"/>
+    <polyline points="288,7 294,7 294,63 270,63 270,56"/>
+    <polyline points="216,21 222,21 222,28"/>
+    <polyline points="198,28 198,63 174,63 174,56"/>
+    <polyline points="210,28 210,35 216,35"/>
+    <polyline points="222,42 222,49 246,49 246,35 258,35 258,28"/>
+  </g>
+</svg>

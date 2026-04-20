@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tim — a simple coding companion</title>
+<meta name="description" content="TIM is a ~5,000 line Claude Code clone with zero runtime dependencies. A simple coding companion for simple people." />
+<meta property="og:title" content="tim — a simple coding companion" />
+<meta property="og:description" content="~5,000 lines of JavaScript. Zero dependencies. One simple coding companion." />
+<link rel="icon" type="image/svg+xml" href="tim.svg" />
+<style>
+  :root {
+    --bg: #05100d;
+    --bg-soft: #0a1b17;
+    --panel: #0d2320;
+    --panel-border: #134e4a;
+    --fg: #d1fae5;
+    --muted: #6ee7b7aa;
+    --teal: #5eead4;
+    --teal-bright: #99f6e4;
+    --teal-deep: #14b8a6;
+    --teal-glow: #2dd4bf;
+    --warn: #fbbf24;
+    --user: #a7f3d0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 15px;
+    line-height: 1.55;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(45,212,191,0.18), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 100%, rgba(20,184,166,0.10), transparent 60%),
+      var(--bg);
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  /* Header */
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+  .brand { color: var(--teal); font-weight: 600; letter-spacing: 0.5px; }
+  .brand::before { content: "~/ "; color: var(--muted); }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 18px;
+    transition: color .15s;
+  }
+  nav a:hover { color: var(--teal-bright); }
+
+  /* Hero */
+  .hero { text-align: center; margin: 24px 0 40px; }
+  .logo {
+    display: block;
+    margin: 0 auto 28px;
+    width: min(460px, 78%);
+    height: auto;
+    filter: drop-shadow(0 0 14px rgba(94,234,212,0.45));
+  }
+  h1 {
+    font-size: clamp(20px, 3vw, 28px);
+    margin: 0 0 10px;
+    font-weight: 500;
+    color: var(--teal-bright);
+  }
+  .tagline { color: var(--muted); margin: 0 0 22px; font-size: 16px; }
+  .pill-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 26px; }
+  .pill {
+    border: 1px solid var(--panel-border);
+    color: var(--teal);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    background: rgba(20,184,166,0.06);
+  }
+  .pill b { color: var(--teal-bright); font-weight: 600; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid var(--teal-deep);
+    color: var(--teal-bright);
+    text-decoration: none;
+    border-radius: 6px;
+    background: rgba(20,184,166,0.08);
+    transition: all .15s;
+    font-size: 14px;
+  }
+  .btn:hover { background: rgba(45,212,191,0.2); border-color: var(--teal); }
+  .btn.primary { background: var(--teal-deep); color: #042f2e; border-color: var(--teal); }
+  .btn.primary:hover { background: var(--teal); color: #042f2e; }
+
+  /* Terminal */
+  .terminal {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 40px 0;
+    box-shadow: 0 8px 40px rgba(20,184,166,0.12), 0 0 0 1px rgba(94,234,212,0.04);
+  }
+  .term-bar {
+    background: var(--bg-soft);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--panel-border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.r { background: #ef4444aa; }
+  .dot.y { background: #f59e0baa; }
+  .dot.g { background: #10b981aa; }
+  .term-title { margin-left: 10px; }
+  .term-body {
+    padding: 18px 20px 22px;
+    min-height: 440px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .term-body .line { display: block; }
+  .prompt { color: var(--teal); }
+  .prompt::before { content: "$ "; }
+  .user-text { color: var(--user); }
+  .comment { color: var(--muted); }
+  .tool { color: var(--teal-glow); }
+  .ok { color: #86efac; }
+  .art { color: var(--teal); }
+  .cursor {
+    display: inline-block;
+    width: 9px;
+    height: 16px;
+    background: var(--teal);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(2) infinite;
+    margin-left: 2px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Sections */
+  section { margin: 56px 0; }
+  h2 {
+    color: var(--teal-bright);
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 18px;
+  }
+  h2::before { content: "## "; color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: rgba(13,35,32,0.5);
+    transition: border-color .15s, transform .15s;
+  }
+  .card:hover { border-color: var(--teal-deep); transform: translateY(-2px); }
+  .card h3 {
+    margin: 0 0 6px;
+    color: var(--teal);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+  pre.code {
+    background: var(--bg-soft);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: var(--fg);
+    font-size: 13px;
+    margin: 0;
+  }
+  pre.code .c { color: var(--muted); }
+  pre.code .k { color: var(--teal); }
+  pre.code .s { color: #fde68a; }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--panel-border);
+    color: var(--muted);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { color: var(--teal-bright); }
+  .small { font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 20px 14px 60px; }
+    nav a { margin-left: 10px; font-size: 13px; }
+    .term-body { min-height: 380px; font-size: 13px; padding: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">tim</span>
+    <nav>
+      <a href="#demo">demo</a>
+      <a href="#install">install</a>
+      <a href="#features">features</a>
+      <a href="https://github.com/tmoreton/TIM" target="_blank" rel="noopener">github</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <img class="logo" src="tim.svg" alt="TIM" width="300" height="70" />
+    <h1>a simple coding companion.</h1>
+    <p class="tagline">tim is a simple guy. he likes simple things.</p>
+    <div class="pill-row">
+      <span class="pill"><b>~5,000</b> lines of JavaScript</span>
+      <span class="pill"><b>0</b> runtime dependencies</span>
+      <span class="pill"><b>1</b> tim</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/tmoreton/TIM" target="_blank" rel="noopener">view on github →</a>
+      <a class="btn" href="#install">install</a>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="terminal" role="img" aria-label="Animated terminal demo of tim">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">~/projects/my-app — tim</span>
+      </div>
+      <div class="term-body" id="term"></div>
+    </div>
+    <p class="small" style="text-align:center;margin-top:-24px;">↑ tim, casually being tim.</p>
+  </section>
+
+  <section id="features">
+    <h2>what tim does</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>reads &amp; edits files</h3>
+        <p>surgical string edits, no full-file rewrites. glob, grep, read, write, list.</p>
+      </div>
+      <div class="card">
+        <h3>runs shell commands</h3>
+        <p>bash execution with timeouts. ctrl-c safe. stdout streamed back.</p>
+      </div>
+      <div class="card">
+        <h3>spawns sub-agents</h3>
+        <p>sequential or parallel swarms with a shared workspace. one tim becomes many.</p>
+      </div>
+      <div class="card">
+        <h3>browses the web</h3>
+        <p>page fetch with content extraction, plus tavily-powered search.</p>
+      </div>
+      <div class="card">
+        <h3>sends email</h3>
+        <p>send, receive, and schedule mail via agentmail. tim will email you.</p>
+      </div>
+      <div class="card">
+        <h3>remembers</h3>
+        <p>persistent memory in <span class="tool">~/.tim</span>. agents, workflows, sessions, triggers.</p>
+      </div>
+      <div class="card">
+        <h3>schedules itself</h3>
+        <p>cron-style triggers and workflows. tim shows up on time.</p>
+      </div>
+      <div class="card">
+        <h3>speaks MCP</h3>
+        <p>plug in any model context protocol server. tim plays nice.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>install</h2>
+<pre class="code"><span class="c"># clone, link, set your key — that's it</span>
+<span class="k">git clone</span> https://github.com/tmoreton/TIM.git &amp;&amp; <span class="k">cd</span> TIM
+<span class="k">npm link</span>
+
+<span class="c"># set your fireworks api key</span>
+tim /env set FIREWORKS_API_KEY=<span class="s">sk-...</span>
+
+<span class="c"># start talking</span>
+tim</pre>
+  </section>
+
+  <section>
+    <h2>philosophy</h2>
+    <div class="card" style="padding:20px 22px;">
+      <p style="color:var(--fg);line-height:1.7;">
+        small codebase, full reach. ~5,000 lines and zero deps — yet tim spawns sub-agent
+        swarms, browses the web, sends email, speaks MCP, and wakes himself up on a cron.
+        no <span class="tool">node_modules</span> black hole. read it on a plane. fork it on a
+        napkin. when the agent future gets weird, you'll be glad tim fits in your head.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <span>built for <span style="color:var(--teal);">tim</span>, by tim. hosted on github pages.</span>
+    <span><a href="https://github.com/tmoreton/TIM" target="_blank" rel="noopener">github.com/tmoreton/TIM</a></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const term = document.getElementById('term');
+  const SPEED = { char: 22, line: 120, pause: 520, long: 1100 };
+
+  // scripted session — each step is either {type, text, cls} or {sleep}
+  const art = `████████╗ ██╗ ███╗   ███╗
+╚══██╔══╝ ██║ ████╗ ████║
+   ██║    ██║ ██║╚██╔╝██║
+   ██║    ██║ ██║ ╚═╝ ██║
+   ╚═╝    ╚═╝ ╚═╝     ╚═╝`;
+
+  const steps = [
+    { prompt: true, typed: 'tim' },
+    { sleep: 300 },
+    { print: art, cls: 'art' },
+    { print: '  tim v1.0 · 4,995 sloc · 0 deps · ready.', cls: 'comment' },
+    { print: '  type a request, or /help for commands.', cls: 'comment' },
+    { print: '' },
+    { sleep: 400 },
+    { user: true, typed: 'add a teal button to index.html that says "hi tim"' },
+    { sleep: 500 },
+    { print: '› thinking...', cls: 'comment' },
+    { sleep: 700 },
+    { print: '› read  index.html  (142 lines)', cls: 'tool' },
+    { sleep: 500 },
+    { print: '› edit  index.html  +3 / -0', cls: 'tool' },
+    { sleep: 400 },
+    { print: '    +   <button class="teal">hi tim</button>', cls: 'ok' },
+    { sleep: 600 },
+    { print: '› bash  npx serve . --port 3000', cls: 'tool' },
+    { sleep: 700 },
+    { print: '    ↳ listening on http://localhost:3000', cls: 'comment' },
+    { sleep: 500 },
+    { print: 'done. button added, server is up. anything else?', cls: 'ok' },
+    { print: '' },
+    { sleep: 600 },
+    { user: true, typed: '/agent researcher "what changed in node 22?"' },
+    { sleep: 500 },
+    { print: '› spawning agent: researcher', cls: 'tool' },
+    { sleep: 450 },
+    { print: '› web   fetch https://nodejs.org/en/blog/release/v22.0.0', cls: 'tool' },
+    { sleep: 600 },
+    { print: '› web   search "node 22 breaking changes"', cls: 'tool' },
+    { sleep: 700 },
+    { print: 'node 22 highlights: require(esm) stable, watch mode on by default,', cls: 'ok' },
+    { print: 'v8 12.4, webstream perf +2x. full notes in ./research/node22.md', cls: 'ok' },
+    { print: '' },
+    { loop: true }, // restart
+  ];
+
+  let idx = 0;
+  let cursorEl = null;
+
+  function appendLine(cls) {
+    const el = document.createElement('span');
+    el.className = 'line' + (cls ? ' ' + cls : '');
+    term.appendChild(el);
+    return el;
+  }
+  function ensureCursor(el) {
+    if (cursorEl) cursorEl.remove();
+    cursorEl = document.createElement('span');
+    cursorEl.className = 'cursor';
+    el.appendChild(cursorEl);
+  }
+  function removeCursor() {
+    if (cursorEl) { cursorEl.remove(); cursorEl = null; }
+  }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+  function scrollToBottom() { term.scrollTop = term.scrollHeight; }
+
+  async function typeInto(el, text) {
+    for (const ch of text) {
+      // insert before cursor
+      const node = document.createTextNode(ch);
+      if (cursorEl) el.insertBefore(node, cursorEl); else el.appendChild(node);
+      scrollToBottom();
+      await sleep(SPEED.char + Math.random()*30);
+    }
+  }
+
+  async function runStep(s) {
+    if (s.sleep) { await sleep(s.sleep); return; }
+    if (s.loop) {
+      await sleep(1800);
+      term.innerHTML = '';
+      idx = -1;
+      return;
+    }
+    if (s.prompt) {
+      const el = appendLine('prompt');
+      ensureCursor(el);
+      await sleep(300);
+      await typeInto(el, s.typed);
+      removeCursor();
+      await sleep(SPEED.pause);
+      return;
+    }
+    if (s.user) {
+      const promptEl = appendLine('prompt');
+      const userSpan = document.createElement('span');
+      userSpan.className = 'user-text';
+      promptEl.appendChild(userSpan);
+      ensureCursor(userSpan);
+      await sleep(250);
+      await typeInto(userSpan, s.typed);
+      removeCursor();
+      await sleep(SPEED.pause);
+      return;
+    }
+    if (typeof s.print === 'string') {
+      const el = appendLine(s.cls);
+      // for ASCII art, preserve newlines as block
+      if (s.print.includes('\n')) {
+        el.style.display = 'block';
+        el.style.whiteSpace = 'pre';
+        el.textContent = s.print;
+      } else {
+        el.textContent = s.print;
+      }
+      scrollToBottom();
+      await sleep(SPEED.line);
+      return;
+    }
+  }
+
+  async function run() {
+    while (true) {
+      const s = steps[idx];
+      if (!s) { idx = 0; continue; }
+      await runStep(s);
+      idx++;
+      if (idx >= steps.length) idx = 0;
+    }
+  }
+
+  // respect reduced-motion: show a static transcript instead
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) {
+    term.innerHTML =
+      '<span class="line prompt">tim</span>' +
+      '<span class="line art" style="white-space:pre;display:block;">' + art + '</span>' +
+      '<span class="line comment">  tim v1.0 · 4,995 sloc · 0 deps · ready.</span>' +
+      '<span class="line prompt"><span class="user-text">add a teal button to index.html</span></span>' +
+      '<span class="line tool">› read  index.html  (142 lines)</span>' +
+      '<span class="line tool">› edit  index.html  +3 / -0</span>' +
+      '<span class="line ok">done. button added.</span>';
+  } else {
+    run();
+  }
+})();
+</script>
+</body>
+</html>

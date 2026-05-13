@@ -4,10 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#F8F7F4" />
-<title>heytim — a thoughtful coding companion</title>
-<meta name="description" content="Tim is a thoughtful coding companion in ~5,027 lines of JavaScript. Zero runtime dependencies. CLI, web UI, and iOS app." />
-<meta property="og:title" content="heytim — a thoughtful coding companion" />
-<meta property="og:description" content="~5,027 lines of JavaScript. Zero dependencies. CLI, web, and iOS — one thoughtful tim." />
+<title>heytim — a minimal coding companion</title>
+<meta name="description" content="Tim is a minimal coding companion in ~5,027 lines of JavaScript. Zero runtime dependencies. CLI, web UI, and iOS app." />
+<meta property="og:title" content="heytim — a minimal coding companion" />
+<meta property="og:description" content="~5,027 lines of JavaScript. Zero dependencies. CLI, web, and iOS — one minimal tim." />
 <link rel="icon" type="image/svg+xml" href="tim.svg" />
 <style>
   :root {
@@ -53,13 +53,12 @@
     margin-bottom: 48px;
   }
   .brand {
-    display: inline-flex; align-items: center; gap: 10px;
     font-family: var(--font-serif);
-    font-size: 20px;
-    color: var(--text);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--teal-dark);
     text-decoration: none;
   }
-  .brand svg { width: 56px; height: auto; }
   nav { display: flex; align-items: center; gap: 4px; }
   nav a {
     color: var(--text-secondary);
@@ -83,11 +82,39 @@
     text-align: center;
     margin: 32px 0 56px;
   }
-  .hero-logo {
-    width: min(380px, 72%);
-    height: auto;
-    margin: 0 auto 32px;
-    display: block;
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 18px);
+    margin: 0 auto 36px;
+    line-height: 1;
+  }
+  .wordmark .text {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(60px, 13vw, 104px);
+    color: var(--teal-dark);
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .wordmark .wave {
+    font-size: clamp(48px, 11vw, 88px);
+    line-height: 1;
+    transform-origin: 70% 80%;
+    animation: hand-wave 2.4s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes hand-wave {
+    0%, 60%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(-12deg); }
+    20% { transform: rotate(16deg); }
+    30% { transform: rotate(-8deg); }
+    40% { transform: rotate(14deg); }
+    50% { transform: rotate(-4deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark .wave { animation: none; }
   }
   h1 {
     font-family: var(--font-serif);
@@ -351,22 +378,6 @@
 <div class="wrap">
   <header>
     <a class="brand" href="/">
-      <svg viewBox="0 0 300 70" aria-label="tim">
-        <g fill="#0D9488">
-          <rect x="0"   y="0"  width="96" height="14"/>
-          <rect x="36"  y="14" width="24" height="42"/>
-          <rect x="120" y="0"  width="24" height="56"/>
-          <rect x="168" y="0"  width="36" height="14"/>
-          <rect x="252" y="0"  width="36" height="14"/>
-          <rect x="168" y="14" width="48" height="14"/>
-          <rect x="240" y="14" width="48" height="14"/>
-          <rect x="168" y="28" width="24" height="14"/>
-          <rect x="216" y="28" width="24" height="14"/>
-          <rect x="264" y="28" width="24" height="14"/>
-          <rect x="168" y="42" width="24" height="14"/>
-          <rect x="264" y="42" width="24" height="14"/>
-        </g>
-      </svg>
       <span>heytim</span>
     </a>
     <nav>
@@ -377,34 +388,11 @@
   </header>
 
   <section class="hero">
-    <svg class="hero-logo" viewBox="0 0 300 70" aria-label="TIM">
-      <g fill="#0D9488">
-        <rect x="0"   y="0"  width="96" height="14"/>
-        <rect x="36"  y="14" width="24" height="42"/>
-        <rect x="120" y="0"  width="24" height="56"/>
-        <rect x="168" y="0"  width="36" height="14"/>
-        <rect x="252" y="0"  width="36" height="14"/>
-        <rect x="168" y="14" width="48" height="14"/>
-        <rect x="240" y="14" width="48" height="14"/>
-        <rect x="168" y="28" width="24" height="14"/>
-        <rect x="216" y="28" width="24" height="14"/>
-        <rect x="264" y="28" width="24" height="14"/>
-        <rect x="168" y="42" width="24" height="14"/>
-        <rect x="264" y="42" width="24" height="14"/>
-      </g>
-      <g fill="none" stroke="#5EEAD4" stroke-width="2" stroke-linejoin="miter" stroke-linecap="square" opacity="0.85">
-        <polyline points="6,14 6,21 36,21"/>
-        <polyline points="96,7 102,7 102,21 66,21 66,63 42,63 42,56"/>
-        <polyline points="144,7 150,7 150,63 126,63 126,56"/>
-        <polyline points="204,7 210,7 210,14"/>
-        <polyline points="288,7 294,7 294,63 270,63 270,56"/>
-        <polyline points="216,21 222,21 222,28"/>
-        <polyline points="198,28 198,63 174,63 174,56"/>
-        <polyline points="210,28 210,35 216,35"/>
-        <polyline points="222,42 222,49 246,49 246,35 258,35 258,28"/>
-      </g>
-    </svg>
-    <h1>a thoughtful coding companion.</h1>
+    <div class="wordmark" aria-label="heyTim">
+      <span class="text">heyTim</span>
+      <span class="wave" role="img" aria-label="waving hand">👋</span>
+    </div>
+    <h1>a minimal coding companion.</h1>
     <p class="tagline">tim is a simple guy. he likes simple things.</p>
     <div class="pill-row">
       <span class="pill"><b>5,027</b> lines of JavaScript</span>

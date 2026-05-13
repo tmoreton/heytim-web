@@ -2,470 +2,650 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>heytim — a simple coding companion</title>
-<meta name="description" content="TIM is a ~5,000 line Claude Code clone with zero runtime dependencies. A simple coding companion for simple people." />
-<meta property="og:title" content="heytim — a simple coding companion" />
-<meta property="og:description" content="~5,000 lines of JavaScript. Zero dependencies. One simple coding companion." />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F8F7F4" />
+<title>heytim — a thoughtful coding companion</title>
+<meta name="description" content="Tim is a thoughtful coding companion in ~5,027 lines of JavaScript. Zero runtime dependencies. CLI, web UI, and iOS app." />
+<meta property="og:title" content="heytim — a thoughtful coding companion" />
+<meta property="og:description" content="~5,027 lines of JavaScript. Zero dependencies. CLI, web, and iOS — one thoughtful tim." />
 <link rel="icon" type="image/svg+xml" href="tim.svg" />
 <style>
   :root {
-    --bg: #05100d;
-    --bg-soft: #0a1b17;
-    --panel: #0d2320;
-    --panel-border: #134e4a;
-    --fg: #d1fae5;
-    --muted: #6ee7b7aa;
-    --teal: #5eead4;
-    --teal-bright: #99f6e4;
-    --teal-deep: #14b8a6;
-    --teal-glow: #2dd4bf;
-    --warn: #fbbf24;
-    --user: #a7f3d0;
+    --bg: #F8F7F4;
+    --surface: #FFFFFF;
+    --bubble-user: #E8E6E1;
+    --input-bg: #F2F0EB;
+    --text: #1C1C1C;
+    --text-secondary: #8C8C8C;
+    --text-muted: #B0B0B0;
+    --teal-dark: #0D9488;
+    --teal-light: #5EEAD4;
+    --teal-gradient: linear-gradient(135deg, #0D9488, #5EEAD4);
+    --border: rgba(0, 0, 0, 0.06);
+    --shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
+    --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --font-serif: ui-serif, Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
   }
+
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+  html, body { margin: 0; padding: 0; }
   body {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    font-size: 15px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 17px;
     line-height: 1.55;
     min-height: 100vh;
-    background:
-      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(45,212,191,0.18), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 90% 100%, rgba(20,184,166,0.10), transparent 60%),
-      var(--bg);
+    -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 80px; }
 
-  /* Header */
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
-  .brand { color: var(--teal); font-weight: 600; letter-spacing: 0.5px; }
-  .brand::before { content: "~/ "; color: var(--muted); }
-  nav a {
-    color: var(--muted);
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+
+  /* ── Header ─────────────────────────────────────────────── */
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 48px;
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-serif);
+    font-size: 20px;
+    color: var(--text);
     text-decoration: none;
-    margin-left: 18px;
-    transition: color .15s;
   }
-  nav a:hover { color: var(--teal-bright); }
+  .brand svg { width: 56px; height: auto; }
+  nav { display: flex; align-items: center; gap: 4px; }
+  nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background .15s ease, color .15s ease;
+  }
+  nav a:hover { background: rgba(0, 0, 0, 0.04); color: var(--text); }
+  nav a.primary {
+    background: var(--teal-gradient);
+    color: white;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  nav a.primary:hover { color: white; opacity: 0.92; }
 
-  /* Hero */
-  .hero { text-align: center; margin: 24px 0 40px; }
-  .logo {
-    display: block;
-    margin: 0 auto 28px;
-    width: min(460px, 78%);
+  /* ── Hero ───────────────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    margin: 32px 0 56px;
+  }
+  .hero-logo {
+    width: min(380px, 72%);
     height: auto;
-    filter: drop-shadow(0 0 14px rgba(94,234,212,0.45));
+    margin: 0 auto 32px;
+    display: block;
   }
   h1 {
-    font-size: clamp(20px, 3vw, 28px);
-    margin: 0 0 10px;
-    font-weight: 500;
-    color: var(--teal-bright);
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 400;
+    color: var(--text);
+    margin: 0 0 12px;
+    line-height: 1.2;
   }
-  .tagline { color: var(--muted); margin: 0 0 22px; font-size: 16px; }
-  .pill-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 26px; }
+  .tagline {
+    color: var(--text-secondary);
+    margin: 0 0 28px;
+    font-size: 17px;
+  }
+  .pill-row {
+    display: flex; gap: 8px;
+    justify-content: center; flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
   .pill {
-    border: 1px solid var(--panel-border);
-    color: var(--teal);
-    padding: 5px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 14px;
     border-radius: 999px;
     font-size: 13px;
-    background: rgba(20,184,166,0.06);
+    box-shadow: var(--shadow-soft);
   }
-  .pill b { color: var(--teal-bright); font-weight: 600; }
-  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .pill b { color: var(--teal-dark); font-weight: 600; }
+  .cta {
+    display: flex; gap: 12px;
+    justify-content: center; flex-wrap: wrap;
+  }
   .btn {
-    display: inline-block;
-    padding: 10px 18px;
-    border: 1px solid var(--teal-deep);
-    color: var(--teal-bright);
-    text-decoration: none;
-    border-radius: 6px;
-    background: rgba(20,184,166,0.08);
-    transition: all .15s;
-    font-size: 14px;
-  }
-  .btn:hover { background: rgba(45,212,191,0.2); border-color: var(--teal); }
-  .btn.primary { background: var(--teal-deep); color: #042f2e; border-color: var(--teal); }
-  .btn.primary:hover { background: var(--teal); color: #042f2e; }
-
-  /* Terminal */
-  .terminal {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 40px 0;
-    box-shadow: 0 8px 40px rgba(20,184,166,0.12), 0 0 0 1px rgba(94,234,212,0.04);
-  }
-  .term-bar {
-    background: var(--bg-soft);
-    padding: 8px 14px;
-    border-bottom: 1px solid var(--panel-border);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
-  .dot.r { background: #ef4444aa; }
-  .dot.y { background: #f59e0baa; }
-  .dot.g { background: #10b981aa; }
-  .term-title { margin-left: 10px; }
-  .term-body {
-    padding: 18px 20px 22px;
-    min-height: 440px;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .term-body .line { display: block; }
-  .prompt { color: var(--teal); }
-  .prompt::before { content: "$ "; }
-  .user-text { color: var(--user); }
-  .comment { color: var(--muted); }
-  .tool { color: var(--teal-glow); }
-  .ok { color: #86efac; }
-  .art { color: var(--teal); }
-  .cursor {
-    display: inline-block;
-    width: 9px;
-    height: 16px;
-    background: var(--teal);
-    vertical-align: text-bottom;
-    animation: blink 1s steps(2) infinite;
-    margin-left: 2px;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  /* Sections */
-  section { margin: 56px 0; }
-  h2 {
-    color: var(--teal-bright);
-    font-size: 18px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 15px;
     font-weight: 500;
-    margin: 0 0 18px;
+    text-decoration: none;
+    transition: transform .12s ease, box-shadow .12s ease;
   }
-  h2::before { content: "## "; color: var(--muted); }
+  .btn.primary {
+    background: var(--teal-gradient);
+    color: white;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+  }
+  .btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(13, 148, 136, 0.32); }
+  .btn.secondary {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-soft);
+  }
+  .btn.secondary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* ── Demo (chat bubbles) ────────────────────────────────── */
+  .demo {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow-card);
+    margin: 64px 0 24px;
+    min-height: 460px;
+    overflow: hidden;
+  }
+  .demo-header {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .demo-header .agent {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .demo-header .agent strong { color: var(--text); font-weight: 600; }
+  .demo-header .dots { display: flex; gap: 6px; }
+  .demo-header .dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--bubble-user);
+  }
+  .demo-transcript {
+    display: flex; flex-direction: column; gap: 14px;
+    min-height: 360px;
+  }
+  .msg.user {
+    align-self: flex-end;
+    max-width: 80%;
+    background: var(--bubble-user);
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .msg.assistant {
+    align-self: flex-start;
+    max-width: 100%;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .tool-call {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--teal-dark);
+    background: rgba(13, 148, 136, 0.07);
+    border-radius: 8px;
+    padding: 7px 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .tool-call .arrow { color: var(--teal-dark); }
+  .tool-call .name { font-weight: 500; }
+  .tool-call .arg { color: var(--text-secondary); font-weight: 400; }
+  .typing-dots {
+    align-self: flex-start;
+    display: inline-flex; gap: 4px;
+    padding: 8px 4px;
+  }
+  .typing-dots span {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--teal-dark);
+    opacity: 0.4;
+    animation: typing-pulse 1.2s ease-in-out infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typing-pulse {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+  .demo-caption {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  /* ── Sections ───────────────────────────────────────────── */
+  section { margin: 72px 0; scroll-margin-top: 24px; }
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 500;
+    margin: 0 0 24px;
+    color: var(--text);
+  }
+  .section-eyebrow {
+    color: var(--teal-dark);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 6px;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 14px;
   }
   .card {
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    padding: 16px 18px;
-    background: rgba(13,35,32,0.5);
-    transition: border-color .15s, transform .15s;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow-soft);
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .card:hover { border-color: var(--teal-deep); transform: translateY(-2px); }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  }
+  .card .icon {
+    width: 22px; height: 22px;
+    color: var(--teal-dark);
+    margin-bottom: 12px;
+  }
   .card h3 {
     margin: 0 0 6px;
-    color: var(--teal);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
+    color: var(--text);
   }
-  .card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
-
-  pre.code {
-    background: var(--bg-soft);
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    overflow-x: auto;
-    color: var(--fg);
-    font-size: 13px;
+  .card p {
     margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
   }
-  pre.code .c { color: var(--muted); }
-  pre.code .k { color: var(--teal); }
-  pre.code .s { color: #fde68a; }
+
+  /* Install */
+  pre.code {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0;
+    box-shadow: var(--shadow-soft);
+  }
+  pre.code .c { color: var(--text-muted); }
+  pre.code .k { color: var(--teal-dark); font-weight: 500; }
+  pre.code .s { color: #b45309; }
+
+  /* Philosophy */
+  .philosophy {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 28px 32px;
+    box-shadow: var(--shadow-soft);
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+  .philosophy code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--input-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--teal-dark);
+  }
 
   footer {
-    margin-top: 60px;
-    padding-top: 24px;
-    border-top: 1px solid var(--panel-border);
-    color: var(--muted);
-    font-size: 12px;
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
   }
-  footer a { color: var(--teal); text-decoration: none; }
-  footer a:hover { color: var(--teal-bright); }
-  .small { font-size: 12px; color: var(--muted); }
+  footer a { color: var(--teal-dark); text-decoration: none; }
+  footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
 
   @media (max-width: 600px) {
-    .wrap { padding: 20px 14px 60px; }
-    nav a { margin-left: 10px; font-size: 13px; }
-    .term-body { min-height: 380px; font-size: 13px; padding: 14px; }
+    .wrap { padding: 20px 16px 60px; }
+    nav { gap: 0; }
+    nav a { padding: 8px 10px; font-size: 13px; }
+    nav a.primary { padding: 8px 14px; }
+    .demo { padding: 20px 16px; }
+    .philosophy { padding: 22px 20px; font-size: 16px; }
+    section { margin: 56px 0; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <span class="brand">heytim</span>
+    <a class="brand" href="/">
+      <svg viewBox="0 0 300 70" aria-label="tim">
+        <g fill="#0D9488">
+          <rect x="0"   y="0"  width="96" height="14"/>
+          <rect x="36"  y="14" width="24" height="42"/>
+          <rect x="120" y="0"  width="24" height="56"/>
+          <rect x="168" y="0"  width="36" height="14"/>
+          <rect x="252" y="0"  width="36" height="14"/>
+          <rect x="168" y="14" width="48" height="14"/>
+          <rect x="240" y="14" width="48" height="14"/>
+          <rect x="168" y="28" width="24" height="14"/>
+          <rect x="216" y="28" width="24" height="14"/>
+          <rect x="264" y="28" width="24" height="14"/>
+          <rect x="168" y="42" width="24" height="14"/>
+          <rect x="264" y="42" width="24" height="14"/>
+        </g>
+      </svg>
+      <span>heytim</span>
+    </a>
     <nav>
-      <a href="#demo">demo</a>
-      <a href="#install">install</a>
       <a href="#features">features</a>
-      <a href="https://github.com/tmoreton/heytim" target="_blank" rel="noopener">github</a>
+      <a href="#install">install</a>
+      <a href="https://github.com/tmoreton/heytim" target="_blank" rel="noopener" class="primary">GitHub</a>
     </nav>
   </header>
 
   <section class="hero">
-    <img class="logo" src="tim.svg" alt="TIM" width="300" height="70" />
-    <h1>a simple coding companion.</h1>
+    <svg class="hero-logo" viewBox="0 0 300 70" aria-label="TIM">
+      <g fill="#0D9488">
+        <rect x="0"   y="0"  width="96" height="14"/>
+        <rect x="36"  y="14" width="24" height="42"/>
+        <rect x="120" y="0"  width="24" height="56"/>
+        <rect x="168" y="0"  width="36" height="14"/>
+        <rect x="252" y="0"  width="36" height="14"/>
+        <rect x="168" y="14" width="48" height="14"/>
+        <rect x="240" y="14" width="48" height="14"/>
+        <rect x="168" y="28" width="24" height="14"/>
+        <rect x="216" y="28" width="24" height="14"/>
+        <rect x="264" y="28" width="24" height="14"/>
+        <rect x="168" y="42" width="24" height="14"/>
+        <rect x="264" y="42" width="24" height="14"/>
+      </g>
+      <g fill="none" stroke="#5EEAD4" stroke-width="2" stroke-linejoin="miter" stroke-linecap="square" opacity="0.85">
+        <polyline points="6,14 6,21 36,21"/>
+        <polyline points="96,7 102,7 102,21 66,21 66,63 42,63 42,56"/>
+        <polyline points="144,7 150,7 150,63 126,63 126,56"/>
+        <polyline points="204,7 210,7 210,14"/>
+        <polyline points="288,7 294,7 294,63 270,63 270,56"/>
+        <polyline points="216,21 222,21 222,28"/>
+        <polyline points="198,28 198,63 174,63 174,56"/>
+        <polyline points="210,28 210,35 216,35"/>
+        <polyline points="222,42 222,49 246,49 246,35 258,35 258,28"/>
+      </g>
+    </svg>
+    <h1>a thoughtful coding companion.</h1>
     <p class="tagline">tim is a simple guy. he likes simple things.</p>
     <div class="pill-row">
-      <span class="pill"><b>~5,000</b> lines of JavaScript</span>
+      <span class="pill"><b>5,027</b> lines of JavaScript</span>
       <span class="pill"><b>0</b> runtime dependencies</span>
-      <span class="pill"><b>1</b> tim</span>
+      <span class="pill"><b>CLI</b> · <b>web</b> · <b>iOS</b></span>
     </div>
     <div class="cta">
-      <a class="btn primary" href="https://github.com/tmoreton/heytim" target="_blank" rel="noopener">view on github →</a>
-      <a class="btn" href="#install">install</a>
+      <a class="btn primary" href="https://github.com/tmoreton/heytim" target="_blank" rel="noopener">
+        view on GitHub
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+      </a>
+      <a class="btn secondary" href="#install">install</a>
     </div>
   </section>
 
-  <section id="demo">
-    <div class="terminal" role="img" aria-label="Animated terminal demo of tim">
-      <div class="term-bar">
-        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-        <span class="term-title">~/projects/my-app — tim</span>
+  <section id="demo" aria-label="chat demo">
+    <div class="demo">
+      <div class="demo-header">
+        <div class="agent">chatting with <strong>tim</strong> · <span style="color:var(--text-muted);">default</span></div>
+        <div class="dots"><span></span><span></span><span></span></div>
       </div>
-      <div class="term-body" id="term"></div>
+      <div class="demo-transcript" id="demo-transcript"></div>
     </div>
-    <p class="small" style="text-align:center;margin-top:-24px;">↑ tim, casually being tim.</p>
+    <p class="demo-caption">↑ tim, casually being tim.</p>
   </section>
 
   <section id="features">
-    <h2>what tim does</h2>
+    <div class="section-eyebrow">what he does</div>
+    <h2 class="section-title">a small companion with a long reach.</h2>
     <div class="grid">
       <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
         <h3>reads &amp; edits files</h3>
         <p>surgical string edits, no full-file rewrites. glob, grep, read, write, list.</p>
       </div>
       <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
         <h3>runs shell commands</h3>
         <p>bash execution with timeouts. ctrl-c safe. stdout streamed back.</p>
       </div>
       <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/></svg>
         <h3>spawns sub-agents</h3>
         <p>sequential or parallel swarms with a shared workspace. one tim becomes many.</p>
       </div>
       <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
         <h3>browses the web</h3>
-        <p>page fetch with content extraction, plus tavily-powered search.</p>
+        <p>page fetch with content extraction, plus search via tavily.</p>
       </div>
       <div class="card">
-        <h3>sends email</h3>
-        <p>send, receive, and schedule mail via agentmail. tim will email you.</p>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <h3>generates images</h3>
+        <p>tim can sketch a thumbnail, illustration, or hero image via OpenRouter's Gemini image model. PNGs land under <code style="font-family:var(--font-mono);font-size:0.88em;background:var(--input-bg);padding:1px 5px;border-radius:4px;color:var(--teal-dark);">~/.tim/output</code>.</p>
       </div>
       <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         <h3>remembers</h3>
-        <p>persistent memory in <span class="tool">~/.tim</span>. agents, workflows, sessions, triggers.</p>
+        <p>persistent memory in <code style="font-family:var(--font-mono);font-size:0.88em;background:var(--input-bg);padding:1px 5px;border-radius:4px;color:var(--teal-dark);">~/.tim</code>. agents, workflows, sessions, triggers.</p>
       </div>
       <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <h3>schedules itself</h3>
         <p>cron-style triggers and workflows. tim shows up on time.</p>
       </div>
       <div class="card">
-        <h3>speaks MCP</h3>
-        <p>plug in any model context protocol server. tim plays nice.</p>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        <h3>captures screenshots</h3>
+        <p>desktop or any web page, with stock OS utilities — no Playwright, no Puppeteer. tim sees what you see.</p>
       </div>
       <div class="card">
-        <h3>iOS app</h3>
-        <p>chat with tim on the go. download from the app store.</p>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+        <h3>web &amp; iOS apps</h3>
+        <p>chat with tim from your browser or your phone. same brain, same sessions.</p>
       </div>
     </div>
   </section>
 
   <section id="install">
-    <h2>install</h2>
-<pre class="code"><span class="c"># clone, link, set your key — that's it</span>
+    <div class="section-eyebrow">get started</div>
+    <h2 class="section-title">install in a minute.</h2>
+<pre class="code"><span class="c"># clone, install, set your key — that's it</span>
 <span class="k">git clone</span> https://github.com/tmoreton/heytim.git &amp;&amp; <span class="k">cd</span> heytim
-<span class="k">npm link</span>
+<span class="k">npm install</span>
 
 <span class="c"># set your openrouter api key</span>
-tim /env set OPENROUTER_API_KEY=<span class="s">sk-...</span>
+tim env set OPENROUTER_API_KEY=<span class="s">sk-...</span>
 
-<span class="c"># start talking</span>
-tim</pre>
+<span class="c"># start talking — in the terminal</span>
+tim
+
+<span class="c"># or boot the web UI + scheduler</span>
+<span class="k">git clone</span> https://github.com/tmoreton/heytim-server.git &amp;&amp; <span class="k">cd</span> heytim-server
+<span class="k">npm install</span> &amp;&amp; tim-server
+<span class="c"># open http://localhost:8080</span></pre>
   </section>
 
-  <section>
-    <h2>philosophy</h2>
-    <div class="card" style="padding:20px 22px;">
-      <p style="color:var(--fg);line-height:1.7;">
-        small codebase, full reach. ~5,000 lines and zero deps — yet tim spawns sub-agent
-        swarms, browses the web, sends email, speaks MCP, and wakes himself up on a cron.
-        no <span class="tool">node_modules</span> black hole. read it on a plane. fork it on a
-        napkin. when the agent future gets weird, you'll be glad tim fits in your head.
-      </p>
+  <section id="philosophy">
+    <div class="section-eyebrow">philosophy</div>
+    <h2 class="section-title">small enough to read on a plane.</h2>
+    <div class="philosophy">
+      5,027 lines and zero deps — yet tim spawns sub-agent swarms, browses the web,
+      generates images, captures screenshots, and wakes himself up on a cron. no
+      <code>node_modules</code> black hole. read it on a plane. fork it on a napkin.
+      when the agent future gets weird, you'll be glad tim fits in your head.
     </div>
   </section>
 
   <footer>
-    <span>built for <span style="color:var(--teal);">heytim</span>, by tim. hosted on github pages.</span>
+    <span>built for <span style="color:var(--teal-dark);">heytim</span>, by tim.</span>
     <span><a href="https://github.com/tmoreton/heytim" target="_blank" rel="noopener">github.com/tmoreton/heytim</a></span>
   </footer>
 </div>
 
 <script>
 (function(){
-  const term = document.getElementById('term');
-  const SPEED = { char: 22, line: 120, pause: 520, long: 1100 };
+  const transcript = document.getElementById('demo-transcript');
+  const SPEED = { char: 26, pause: 420 };
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // scripted session — each step is either {type, text, cls} or {sleep}
-  const art = `████████╗ ██╗ ███╗   ███╗
-╚══██╔══╝ ██║ ████╗ ████║
-   ██║    ██║ ██║╚██╔╝██║
-   ██║    ██║ ██║ ╚═╝ ██║
-   ╚═╝    ╚═╝ ╚═╝     ╚═╝`;
-
+  // Conversation script. Each step renders a row and may pause after.
   const steps = [
-    { prompt: true, typed: 'tim' },
-    { sleep: 300 },
-    { print: art, cls: 'art' },
-    { print: '  tim v1.0 · 4,995 sloc · 0 deps · ready.', cls: 'comment' },
-    { print: '  type a request, or /help for commands.', cls: 'comment' },
-    { print: '' },
-    { sleep: 400 },
-    { user: true, typed: 'add a teal button to index.html that says "hi tim"' },
+    { type: 'user',     text: "add a teal button to index.html that says 'hi tim'" },
     { sleep: 500 },
-    { print: '› thinking...', cls: 'comment' },
-    { sleep: 700 },
-    { print: '› read  index.html  (142 lines)', cls: 'tool' },
-    { sleep: 500 },
-    { print: '› edit  index.html  +3 / -0', cls: 'tool' },
-    { sleep: 400 },
-    { print: '    +   <button class="teal">hi tim</button>', cls: 'ok' },
-    { sleep: 600 },
-    { print: '› bash  npx serve . --port 3000', cls: 'tool' },
-    { sleep: 700 },
-    { print: '    ↳ listening on http://localhost:3000', cls: 'comment' },
-    { sleep: 500 },
-    { print: 'done. button added, server is up. anything else?', cls: 'ok' },
-    { print: '' },
-    { sleep: 600 },
-    { user: true, typed: '/agent researcher "what changed in node 22?"' },
-    { sleep: 500 },
-    { print: '› spawning agent: researcher', cls: 'tool' },
+    { type: 'typing' },
+    { sleep: 900 },
+    { remove: 'typing' },
+    { type: 'tool',     name: 'read_file', arg: 'index.html (142 lines)' },
     { sleep: 450 },
-    { print: '› web   fetch https://nodejs.org/en/blog/release/v22.0.0', cls: 'tool' },
+    { type: 'tool',     name: 'edit_file', arg: 'index.html · +3 / −0' },
+    { sleep: 500 },
+    { type: 'assistant', text: 'Done — added the button just inside <code>&lt;main&gt;</code>. Want me to give it a soft shadow and a hover state to match the rest of the page?' },
+    { sleep: 2400 },
+    { type: 'user',     text: '/agent researcher "what changed in node 22?"' },
+    { sleep: 500 },
+    { type: 'tool',     name: 'spawn_agent', arg: 'researcher' },
+    { sleep: 350 },
+    { type: 'tool',     name: 'web_fetch',  arg: 'nodejs.org/en/blog/release/v22.0.0' },
+    { sleep: 500 },
+    { type: 'tool',     name: 'web_search', arg: '"node 22 breaking changes"' },
     { sleep: 600 },
-    { print: '› web   search "node 22 breaking changes"', cls: 'tool' },
-    { sleep: 700 },
-    { print: 'node 22 highlights: require(esm) stable, watch mode on by default,', cls: 'ok' },
-    { print: 'v8 12.4, webstream perf +2x. full notes in ./research/node22.md', cls: 'ok' },
-    { print: '' },
-    { loop: true }, // restart
+    { type: 'assistant', text: 'Node 22 highlights: <code>require(esm)</code> stable, watch mode on by default, V8 12.4, WebStream perf roughly doubled. Full notes saved to <code>./research/node22.md</code>.' },
+    { sleep: 3200 },
+    { loop: true },
   ];
 
-  let idx = 0;
-  let cursorEl = null;
+  function escapeHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  // Allow a small inline whitelist (<code>) inside escaped text.
+  function richText(s) {
+    return escapeHTML(s).replace(/&lt;code&gt;([^]*?)&lt;\/code&gt;/g, '<code style="font-family:var(--font-mono);font-size:0.88em;background:var(--input-bg);padding:1px 6px;border-radius:4px;color:var(--teal-dark);">$1</code>');
+  }
 
-  function appendLine(cls) {
-    const el = document.createElement('span');
-    el.className = 'line' + (cls ? ' ' + cls : '');
-    term.appendChild(el);
+  function appendMsg(role) {
+    const el = document.createElement('div');
+    el.className = 'msg ' + role;
+    transcript.appendChild(el);
     return el;
   }
-  function ensureCursor(el) {
-    if (cursorEl) cursorEl.remove();
-    cursorEl = document.createElement('span');
-    cursorEl.className = 'cursor';
-    el.appendChild(cursorEl);
+  function appendTool(name, arg) {
+    const el = document.createElement('div');
+    el.className = 'tool-call';
+    el.innerHTML = '<span class="arrow">›</span><span class="name">' + escapeHTML(name) + '</span><span class="arg">' + escapeHTML(arg) + '</span>';
+    transcript.appendChild(el);
+    return el;
   }
-  function removeCursor() {
-    if (cursorEl) { cursorEl.remove(); cursorEl = null; }
+  function appendTyping() {
+    const el = document.createElement('div');
+    el.className = 'typing-dots';
+    el.id = '__typing';
+    el.innerHTML = '<span></span><span></span><span></span>';
+    transcript.appendChild(el);
+    return el;
   }
-  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-  function scrollToBottom() { term.scrollTop = term.scrollHeight; }
 
-  async function typeInto(el, text) {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  async function typeInto(el, text, isRich) {
+    const setter = (val) => { if (isRich) el.innerHTML = richText(val); else el.textContent = val; };
+    let buf = '';
     for (const ch of text) {
-      // insert before cursor
-      const node = document.createTextNode(ch);
-      if (cursorEl) el.insertBefore(node, cursorEl); else el.appendChild(node);
-      scrollToBottom();
-      await sleep(SPEED.char + Math.random()*30);
+      buf += ch;
+      setter(buf);
+      await sleep(SPEED.char + Math.random() * 22);
     }
   }
 
   async function runStep(s) {
     if (s.sleep) { await sleep(s.sleep); return; }
     if (s.loop) {
-      await sleep(1800);
-      term.innerHTML = '';
-      idx = -1;
+      await sleep(800);
+      transcript.innerHTML = '';
+      return 'loop';
+    }
+    if (s.remove === 'typing') {
+      const t = document.getElementById('__typing');
+      if (t) t.remove();
       return;
     }
-    if (s.prompt) {
-      const el = appendLine('prompt');
-      ensureCursor(el);
-      await sleep(300);
-      await typeInto(el, s.typed);
-      removeCursor();
-      await sleep(SPEED.pause);
+    if (s.type === 'user') {
+      const el = appendMsg('user');
+      await typeInto(el, s.text, false);
       return;
     }
-    if (s.user) {
-      const promptEl = appendLine('prompt');
-      const userSpan = document.createElement('span');
-      userSpan.className = 'user-text';
-      promptEl.appendChild(userSpan);
-      ensureCursor(userSpan);
-      await sleep(250);
-      await typeInto(userSpan, s.typed);
-      removeCursor();
-      await sleep(SPEED.pause);
+    if (s.type === 'assistant') {
+      const el = appendMsg('assistant');
+      await typeInto(el, s.text, true);
       return;
     }
-    if (typeof s.print === 'string') {
-      const el = appendLine(s.cls);
-      // for ASCII art, preserve newlines as block
-      if (s.print.includes('\n')) {
-        el.style.display = 'block';
-        el.style.whiteSpace = 'pre';
-        el.textContent = s.print;
-      } else {
-        el.textContent = s.print;
-      }
-      scrollToBottom();
-      await sleep(SPEED.line);
+    if (s.type === 'tool') {
+      appendTool(s.name, s.arg);
+      return;
+    }
+    if (s.type === 'typing') {
+      appendTyping();
       return;
     }
   }
 
   async function run() {
+    let idx = 0;
     while (true) {
       const s = steps[idx];
       if (!s) { idx = 0; continue; }
-      await runStep(s);
+      const result = await runStep(s);
+      if (result === 'loop') { idx = 0; continue; }
       idx++;
       if (idx >= steps.length) idx = 0;
     }
   }
 
-  // respect reduced-motion: show a static transcript instead
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Static fallback for users who prefer reduced motion.
   if (reduced) {
-    term.innerHTML =
-      '<span class="line prompt">tim</span>' +
-      '<span class="line art" style="white-space:pre;display:block;">' + art + '</span>' +
-      '<span class="line comment">  tim v1.0 · 4,995 sloc · 0 deps · ready.</span>' +
-      '<span class="line prompt"><span class="user-text">add a teal button to index.html</span></span>' +
-      '<span class="line tool">› read  index.html  (142 lines)</span>' +
-      '<span class="line tool">› edit  index.html  +3 / -0</span>' +
-      '<span class="line ok">done. button added.</span>';
+    const html = `
+      <div class="msg user">add a teal button to index.html that says 'hi tim'</div>
+      <div class="tool-call"><span class="arrow">›</span><span class="name">read_file</span><span class="arg">index.html (142 lines)</span></div>
+      <div class="tool-call"><span class="arrow">›</span><span class="name">edit_file</span><span class="arg">index.html · +3 / −0</span></div>
+      <div class="msg assistant">Done — added the button. Want me to give it a soft shadow and hover state to match the rest of the page?</div>
+    `;
+    transcript.innerHTML = html;
   } else {
     run();
   }
